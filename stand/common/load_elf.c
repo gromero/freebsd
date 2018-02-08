@@ -254,7 +254,8 @@ go_ahead:
 			goto go_ahead2;
 		} else if (ehdr->e_machine == 21) {
 			printf("ELF is EM_PPC64\n");
-			goto go_ahead2;
+			err = EFTYPE;
+			goto error;
 		} else {
 			printf("e_version or e_machine mismatch!\n");
 			printf("ehdr->e_version: %d %d\n", ehdr->e_version, EV_CURRENT);
