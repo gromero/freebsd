@@ -229,15 +229,22 @@ __elfN(load_elf_header)(char *filename, elf_file_t ef)
 	if (ehdr->e_ident[EI_CLASS] != ELF_TARG_CLASS || /* Layout ? */
 	    ehdr->e_ident[EI_DATA] != ELF_TARG_DATA ||
 	    ehdr->e_ident[EI_VERSION] != EV_CURRENT) /* Version ? */ {
+		if (ehdr->e_ident[EI_DATA] == ELFDATA2MSB)
+			printf("ELF is MSB (supported)\n");
+		else
+			printf("ELF is LSB (not supported)\n");
+		printf("EI_CLASS, DATA, or VERSION mismatch!\n");
 		err = EFTYPE;
 		goto error;
 	}
 
 	err = elf_header_convert(ehdr);
-	if (err)
+	if (err) {
+		printf("elf_header_convert() returned error!\n");
 		goto error;
-
+	}
 	if (ehdr->e_version != EV_CURRENT || ehdr->e_machine != ELF_TARG_MACH) { /* Machine ? */
+		printf("e_verion or e_machine mistmatch!\n");
 		err = EFTYPE;
 		goto error;
 	}
