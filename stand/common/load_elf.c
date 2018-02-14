@@ -235,7 +235,9 @@ __elfN(load_elf_header)(char *filename, elf_file_t ef)
 		}
 		else {
 			printf("ELF is LSB (converting header from LSB to MSB...)\n");
+			printf("e_entry before: %p\n", (void *) ehdr->e_entry);
 			err = elf_header_convert(ehdr);
+			printf("e_entry after : %p\n", (void *) ehdr->e_entry);
 			if (err) {
 				printf("unabled to convert header endianness\n");
 				goto error;
