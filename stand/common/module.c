@@ -258,6 +258,8 @@ command_lsmod(int argc, char *argv[])
     struct file_metadata	*md;
     char			lbuf[80];
     int				ch, verbose, ret = 0;
+    int i;
+    unsigned char con;
 
     verbose = 0;
     optind = 1;
@@ -281,6 +283,10 @@ command_lsmod(int argc, char *argv[])
 	pager_output(fp->f_name);
 	snprintf(lbuf, sizeof(lbuf), " (%s, 0x%lx)\n", fp->f_type,
 	    (long)fp->f_size);
+
+       for (i=0; i < 100; i++)
+	printf("%d\n", *(unsigned int *)(fp->f_addr+i));
+
 	if (pager_output(lbuf))
 	    break;
 	if (fp->f_args != NULL) {
