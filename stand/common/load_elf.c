@@ -404,8 +404,11 @@ __elfN(loadfile_raw)(char *filename, u_int64_t dest,
 #endif
 
     fp->f_size = __elfN(loadimage)(fp, &ef, dest);
-    if (fp->f_size == 0 || fp->f_addr == 0)
+    if (fp->f_size == 0)
 	goto ioerr;
+
+    if (fp->f_addr == 0)
+	fp->f_addr = 0x100000;
 
     /* save exec header as metadata */
     file_addmetadata(fp, MODINFOMD_ELFHDR, sizeof(*ehdr), ehdr);
