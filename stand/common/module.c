@@ -38,6 +38,7 @@ __FBSDID("$FreeBSD$");
 #include <sys/module.h>
 #include <sys/queue.h>
 #include <sys/stdint.h>
+#include <machine/elf.h>
 
 #include "bootstrap.h"
 
@@ -636,10 +637,14 @@ file_findmodule(struct preloaded_file *fp, char *modname,
  * Make a copy of (size) bytes of data from (p), and associate them as
  * metadata of (type) to the module (mp).
  */
+//    file_addmetadata(fp, MODINFOMD_ELFHDR, sizeof(*ehdr), ehdr);
 void
 file_addmetadata(struct preloaded_file *fp, int type, size_t size, void *p)
 {
     struct file_metadata	*md;
+    Elf_Ehdr *e = p;
+
+    printf("meta: ehdr->e_entry = %p\n", e->e_entry);
 
     md = malloc(sizeof(struct file_metadata) - sizeof(md->md_data) + size);
     md->md_size = size;
@@ -647,6 +652,9 @@ file_addmetadata(struct preloaded_file *fp, int type, size_t size, void *p)
     bcopy(p, md->md_data, size);
     md->md_next = fp->f_metadata;
     fp->f_metadata = md;
+
+    e = (Elf_Ehdr *) md->md_data;
+    printf("meta: md->md_data->e_entry = %p\n", e->e_entry);
 }
 
 /*
