@@ -229,8 +229,10 @@ __elfN(load_elf_header)(char *filename, elf_file_t ef)
 	if (ehdr->e_ident[EI_CLASS] != ELF_TARG_CLASS || /* Layout ? */
 	    ehdr->e_ident[EI_DATA] != ELF_TARG_DATA ||
 	    ehdr->e_ident[EI_VERSION] != EV_CURRENT) /* Version ? */ {
-		if (ehdr->e_ident[EI_DATA] == ELFDATA2MSB)
+		if (ehdr->e_ident[EI_DATA] == ELFDATA2MSB) {
 			printf("ELF is MSB (native endianness is supported)\n");
+			goto go_ahead;
+		}
 		else {
 			printf("ELF is LSB (converting header from LSB to MSB...)\n");
 			err = elf_header_convert(ehdr);
@@ -247,11 +249,22 @@ __elfN(load_elf_header)(char *filename, elf_file_t ef)
 
 go_ahead:
 	if (ehdr->e_version != EV_CURRENT || ehdr->e_machine != ELF_TARG_MACH) { /* Machine ? */
-		printf("e_verion or e_machine mistmatch!\n");
-		err = EFTYPE;
-		goto error;
+		if (ehdr->e_machine == 20) {
+			printf("ELF is EM_PPC\n");
+			goto go_ahead2;
+		} else if (ehdr->e_machine == 21) {
+			printf("ELF is EM_PPC64\n");
+			goto go_ahead2;
+		} else {
+			printf("e_version or e_machine mismatch!\n");
+			printf("ehdr->e_version: %d %d\n", ehdr->e_version, EV_CURRENT);
+			printf("e_machine      : %d %d\n", ehdr->e_machine, ELF_TARG_MACH);
+			err = EFTYPE;
+			goto error;
+		}
 	}
 
+go_ahead2:
 	return (0);
 
 error:
