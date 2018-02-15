@@ -39,6 +39,7 @@ __FBSDID("$FreeBSD$");
 #include <sys/queue.h>
 #include <sys/stdint.h>
 #include <machine/elf.h>
+#include <stdlib.h>
 
 #include "bootstrap.h"
 
@@ -276,14 +277,22 @@ command_lsmod(int argc, char *argv[])
     int				ch, verbose, ret = 0;
     int i;
     unsigned char con;
+    void *addr_to_dump=-1;
+    int size_to_dump = -1;
 
     verbose = 0;
     optind = 1;
     optreset = 1;
-    while ((ch = getopt(argc, argv, "v")) != -1) {
+    while ((ch = getopt(argc, argv, "va:s:")) != -1) {
 	switch(ch) {
 	case 'v':
 	    verbose = 1;
+	    break;
+	case 'a':
+	    addr_to_dump = (void *)atol(optarg);
+	    break;
+	case 's':
+	    size_to_dump = atoi(optarg);
 	    break;
 	case '?':
 	default:
@@ -300,7 +309,7 @@ command_lsmod(int argc, char *argv[])
 	snprintf(lbuf, sizeof(lbuf), " (%s, 0x%lx)\n", fp->f_type,
 	    (long)fp->f_size);
 
-	dumper((void *)fp->f_addr, 0x100);
+	dumper(addr_to_dump == -1 ? (void *)fp->f_addr : addr_to_dump, size_to_dump == -1 ? 0x100              : size_to_dump);
 
 	if (pager_output(lbuf))
 	    break;

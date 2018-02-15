@@ -31,11 +31,11 @@ SRCS+=	bcmp.c bcopy.c bzero.c ffs.c fls.c \
 	memccpy.c memchr.c memcmp.c memcpy.c memmove.c memset.c \
 	qdivrem.c strcat.c strchr.c strcmp.c strcpy.c stpcpy.c stpncpy.c \
 	strcspn.c strlcat.c strlcpy.c strlen.c strncat.c strncmp.c strncpy.c \
-	strnlen.c strpbrk.c strrchr.c strsep.c strspn.c strstr.c strtok.c swab.c
+	strnlen.c strpbrk.c strrchr.c strsep.c strspn.c strstr.c strtok.c swab.c strtol.c strtoll.c
 
 # stdlib functions from libc
 .PATH: ${LIBC_SRC}/stdlib
-SRCS+=	abs.c strtol.c strtoll.c strtoul.c strtoull.c
+SRCS+=	abs.c strtol.c strtoll.c strtoul.c strtoull.c atol.c atoi.c
 
 .if ${MACHINE_CPUARCH} == "arm"
 .PATH: ${LIBC_SRC}/arm/gen
@@ -98,8 +98,8 @@ SRCS+=	infback.c inffast.c inflate.c inftrees.c zutil.c
 # Create a subset of includes that are safe, as well as adjusting those that aren't
 # The lists may drive people nuts, but they are explicitly opt-in
 FAKE_DIRS=xlocale arpa
-SAFE_INCS=a.out.h assert.h elf.h limits.h nlist.h setjmp.h stddef.h stdbool.h string.h strings.h time.h unistd.h uuid.h
-STAND_H_INC=ctype.h fcntl.h signal.h stdio.h stdlib.h
+SAFE_INCS=a.out.h assert.h elf.h limits.h nlist.h setjmp.h stddef.h stdbool.h string.h strings.h time.h unistd.h uuid.h stdlib.h
+STAND_H_INC=ctype.h fcntl.h signal.h stdio.h stdlib.h xlocale.h
 OTHER_INC=stdarg.h errno.h stdint.h
 
 beforedepend:
