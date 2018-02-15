@@ -248,6 +248,22 @@ command_unload(int argc, char *argv[])
     return(CMD_OK);
 }
 
+void dumper(void *p, int size)
+{
+ int i;
+ int nbytes;
+
+ for (i = 0; i < size; i++) {
+   if (!(i % 4)) {
+     printf("\n");
+     printf("%p: ", p+i);
+   }
+   printf("%.2hhx ", *(unsigned char *)(p+i));
+ }
+
+ printf("\n");
+}
+
 COMMAND_SET(lsmod, "lsmod", "list loaded modules", command_lsmod);
 
 static int
@@ -284,8 +300,7 @@ command_lsmod(int argc, char *argv[])
 	snprintf(lbuf, sizeof(lbuf), " (%s, 0x%lx)\n", fp->f_type,
 	    (long)fp->f_size);
 
-       for (i=0; i < 100; i++)
-	printf("%d\n", *(unsigned int *)(fp->f_addr+i));
+	dumper((void *)fp->f_addr, 0x100);
 
 	if (pager_output(lbuf))
 	    break;
