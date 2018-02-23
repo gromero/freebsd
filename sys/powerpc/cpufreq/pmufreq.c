@@ -186,9 +186,9 @@ pmufreq_set(device_t dev, const struct cf_setting *set)
 	else
 		speed_sel = 1;
 
-	error = pmu_set_speed(speed_sel);
-	if (error == 0)
-		sc->curfreq = set->freq;
+//	error = pmu_set_speed(speed_sel);
+//	if (error == 0)
+//		sc->curfreq = set->freq;
 
 	return (error);
 }
